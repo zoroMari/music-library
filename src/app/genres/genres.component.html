@@ -3,7 +3,7 @@
    <div
     class="Genre Genre_{{ genre.name }}"
     *ngFor="let genre of genres"
-    (click)="handleOpenGenre(genre.title)"
+    (click)="handleOpenGenre(genre.name)"
   >
     <p class="GenreName">{{ genre.title }}</p>
   </div>

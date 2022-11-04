@@ -1,0 +1,28 @@
+@import '../variables'
+
+.Wrapper
+  height: 100vh
+  overflow-y: scroll !important
+
+  .Albums
+    scroll-behavior: smooth
+    display: grid
+    padding: 48px 48px
+    grid-template-columns: repeat(5, 1fr)
+    gap: 24px
+
+    @media screen and (max-width: 1200px)
+      padding: 48px 24px
+
+    @media screen and (max-width: 500px)
+      grid-template-columns: repeat(1, 1fr)
+
+    &-Album
+      display: flex
+      justify-content: center
+      align-items: center
+      background-color: $color-rock
+      border-radius: $border-radius-small
+      width: 100%
+      aspect-ratio : 1 / 1
+
