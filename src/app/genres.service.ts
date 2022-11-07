@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { map } from "rxjs";
 import { IAlbumsFromAPI } from "./shared/album.model";
 import { IGenre } from "./shared/genre.model";
+import { environment } from "src/environments/environment";
 
 @Injectable({providedIn: 'root'})
 export class GenresService {
@@ -21,7 +22,7 @@ export class GenresService {
 
   public fetchGenre(genre: string) {
     return this._http
-      .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=22e5dcb7293a23da484afeacce80c247&format=json`)
+      .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=${environment.keyForAPI}&format=json`)
       .pipe(map(
         (data: IAlbumsFromAPI) => data.albums.album
       ))
