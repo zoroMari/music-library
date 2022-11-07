@@ -17,7 +17,8 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   public albums!: Observable<IAlbum[]>;
   public albumsArray: IAlbum[] = [];
   private _albumsChange = new Subject<IAlbum[]>();
-  
+
+  public noAlbums = false;
   public hover = false;
 
   constructor(
@@ -59,6 +60,12 @@ export class GenrePageComponent implements OnInit, OnDestroy {
         const newAlbumsArray: IAlbum[] = albums.filter((item) => {
           return (item.name).toLowerCase().includes(value.toLowerCase())
         });
+
+        if (newAlbumsArray.length === 0) {
+          this.noAlbums = true;
+        } else {
+          this.noAlbums = false;
+        }
         this._albumsChange.next(newAlbumsArray);
       }
     )

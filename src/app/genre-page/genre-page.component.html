@@ -1,6 +1,7 @@
 <app-navigation (onSearch)="handleOnSearch($event)"></app-navigation>
 
 <section class="Wrapper">
+  <p class="Albums_empty" *ngIf="noAlbums">There isn't any albums with such name</p>
   <div class="Albums">
     <div
       class="Albums-Album"
