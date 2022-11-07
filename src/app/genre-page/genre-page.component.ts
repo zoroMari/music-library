@@ -1,37 +1,46 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 import { GenresService } from '../genres.service';
+import { IAlbum } from '../shared/album.model';
 
 @Component({
   selector: 'app-genre-page',
   templateUrl: './genre-page.component.html',
   styleUrls: ['./genre-page.component.sass']
 })
-export class GenrePageComponent implements OnInit {
-  public albums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+export class GenrePageComponent implements OnInit, OnDestroy {
+
+  public albums!: Observable<IAlbum[]>;
+  private _sub!: Subscription;
 
   constructor(
-    private _genresService: GenresService,
-    private _router: Router,
+    public genresService: GenresService,
     private _route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
-
-    this._route.params.subscribe(
+    this._sub = this._route.params.subscribe(
       (params: Params) => {
-        const isGenre = () => {
-          return this._genresService.genres.find((item) => {
-            return item.name === params['genre'].toLowerCase();
-          })
-        }
-
-        if (!isGenre()) {
-          this._router.navigate(['/']);
-        }
+        this.albums = this.genresService.fetchGenre(params['genre'])
       }
     )
-
   }
 
+  public imgStyles(album: IAlbum) {
+    return {
+      'background-image': `${this.getAlbumImg(album)}`,
+      'background-repeat': 'no-repeat',
+      'background-position': 'center',
+      'background-size': 'cover'
+    }
+  }
+
+  public getAlbumImg(album: IAlbum) {
+    return `url(${album.image[3]['#text']})`
+  }
+
+  ngOnDestroy(): void {
+      this._sub.unsubscribe();
+  }
 }

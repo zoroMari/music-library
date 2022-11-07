@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IGenre } from '../genre.model';
+import { IGenre } from '../shared/genre.model';
 import { GenresService } from '../genres.service';
 
 @Component({
@@ -21,6 +21,7 @@ export class GenresComponent implements OnInit {
   }
 
   public handleOpenGenre(genre: string) {
-      this._router.navigate(['', genre])
+      this._router.navigate(['', genre]);
+      // this._genresService.fetchGenre(genre);
   }
 }

@@ -2,8 +2,13 @@
 
 <section class="Wrapper">
   <div class="Albums">
-    <div class="Albums-Album" *ngFor="let album of albums; let i = index">
-      <p>Test</p>
+    <div
+      class="Albums-Album"
+      [ngStyle]="imgStyles(album)"
+      *ngFor="let album of (albums | async);
+      let i = index"
+    >
+      <p>{{ album.name }}</p>
     </div>
   </div>
 
