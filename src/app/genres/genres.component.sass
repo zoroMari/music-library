@@ -1,24 +1,20 @@
-@import '../variables'
+@import '../shared/variables'
 
 .Genres
-  width: 80%
   height: 100vh
-  display: flex
-  flex-wrap: wrap
-  justify-content: space-between
-  align-content: space-between
-  margin: auto
-  padding: 120px 0px
+  padding: 120px 120px
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
+  gap: 48px
+
 
   .Genre
-    width: 30%
-    height: 46%
     @include font-medium
     background-color: $color-accent
     display: flex
     justify-content: center
     align-items: center
-    border-radius: 24px
+    border-radius: $border-radius-main
     background-size: cover
     background-repeat: no-repeat
 

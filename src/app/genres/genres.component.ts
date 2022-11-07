@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { IGenre } from '../shared/genre.model';
+import { GenresService } from '../genres.service';
 
 @Component({
   selector: 'app-genres',
@@ -7,22 +9,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./genres.component.sass']
 })
 export class GenresComponent implements OnInit {
+  public genres!: IGenre[];
 
-  public genres = [
-    { name: 'rock', title: 'Rock' },
-    { name: 'electro', title: 'Electro' },
-    { name: 'pop', title: 'Pop' },
-    { name: 'hipHop', title: 'Hip-Hop' },
-    { name: 'rAndB', title: 'R&B' },
-    { name: 'indie', title: 'Indie' },
-  ];
-
-  constructor(private _router: Router) { }
+  constructor(
+    private _router: Router,
+    private _genresService: GenresService,
+  ) { }
 
   ngOnInit(): void {
+    this.genres = this._genresService.genres;
   }
 
   public handleOpenGenre(genre: string) {
-    this._router.navigate(['', genre])
+      this._router.navigate(['', genre]);
+      // this._genresService.fetchGenre(genre);
   }
 }

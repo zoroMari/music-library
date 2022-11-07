@@ -1,1 +1,15 @@
-<p>genre-page works!</p>
+<app-navigation></app-navigation>
+
+<section class="Wrapper">
+  <div class="Albums">
+    <div
+      class="Albums-Album"
+      [ngStyle]="imgStyles(album)"
+      *ngFor="let album of (albums | async);
+      let i = index"
+    >
+      <p>{{ album.name }}</p>
+    </div>
+  </div>
+
+</section>

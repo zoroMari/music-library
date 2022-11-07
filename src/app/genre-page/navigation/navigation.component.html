@@ -1,0 +1,31 @@
+<mat-toolbar class="Header">
+  <div class="LeftSide">
+    <button
+      mat-icon-button
+      class="BackButton"
+      (click)="handleBack()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back</span>
+    </button>
+
+    <form class="test" #form="ngForm" (ngSubmit)="handleSubmit(form)">
+      <mat-form-field appearance="outline" class="Search">
+        <mat-label>Search</mat-label>
+        <input
+          matInput
+          ngModel
+          name="search"
+          #search="ngModel"
+        >
+      </mat-form-field>
+    </form>
+  </div>
+
+  <span class="Spacer"></span>
+
+  <button mat-icon-button color="secondary" class="Favorite">
+    <mat-icon matBadge="0" matBadgeColor="warn">favorite</mat-icon>
+  </button>
+
+</mat-toolbar>
