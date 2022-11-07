@@ -1,15 +1,18 @@
-<app-navigation></app-navigation>
+<app-navigation (onSearch)="handleOnSearch($event)"></app-navigation>
 
 <section class="Wrapper">
   <div class="Albums">
     <div
       class="Albums-Album"
       [ngStyle]="imgStyles(album)"
-      *ngFor="let album of (albums | async);
+      [ngClass]="{hover: hover}"
+      (mouseenter)="handleHoverGenre()"
+      *ngFor="let album of albumsArray;
       let i = index"
     >
       <p>{{ album.name }}</p>
     </div>
+
   </div>
 
 </section>

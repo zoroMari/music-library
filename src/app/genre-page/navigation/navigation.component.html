@@ -9,14 +9,12 @@
       <span>Back</span>
     </button>
 
-    <form class="test" #form="ngForm" (ngSubmit)="handleSubmit(form)">
+    <form class="test" [formGroup]="form">
       <mat-form-field appearance="outline" class="Search">
         <mat-label>Search</mat-label>
         <input
           matInput
-          ngModel
-          name="search"
-          #search="ngModel"
+          formControlName="search"
         >
       </mat-form-field>
     </form>

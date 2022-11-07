@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { GenresService } from '../genres.service';
 import { IAlbum } from '../shared/album.model';
 
@@ -10,9 +10,15 @@ import { IAlbum } from '../shared/album.model';
   styleUrls: ['./genre-page.component.sass']
 })
 export class GenrePageComponent implements OnInit, OnDestroy {
+  private _subParam!: Subscription;
+  private _subAlbumsChange!: Subscription;
+  private _subAlbums!: Subscription;
 
   public albums!: Observable<IAlbum[]>;
-  private _sub!: Subscription;
+  public albumsArray: IAlbum[] = [];
+  private _albumsChange = new Subject<IAlbum[]>();
+  
+  public hover = false;
 
   constructor(
     public genresService: GenresService,
@@ -20,10 +26,17 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this._sub = this._route.params.subscribe(
+    this._subParam = this._route.params.subscribe(
       (params: Params) => {
-        this.albums = this.genresService.fetchGenre(params['genre'])
+        this.albums = this.genresService.fetchGenre(params['genre']);
+        this.genresService.fetchGenre(params['genre']).subscribe(
+          (albums) => this.albumsArray = albums
+        )
       }
+    )
+
+    this._subAlbumsChange = this._albumsChange.subscribe(
+      (albums) => this.albumsArray = albums
     )
   }
 
@@ -40,7 +53,25 @@ export class GenrePageComponent implements OnInit, OnDestroy {
     return `url(${album.image[3]['#text']})`
   }
 
+  public handleOnSearch(value: string) {
+    this._subAlbums = this.albums.subscribe(
+      (albums) => {
+        const newAlbumsArray: IAlbum[] = albums.filter((item) => {
+          return (item.name).toLowerCase().includes(value.toLowerCase())
+        });
+        this._albumsChange.next(newAlbumsArray);
+      }
+    )
+  }
+
+  public handleHoverGenre() {
+    this.hover = true;
+    console.log('TEST >>>', 'TEST');
+  }
+
   ngOnDestroy(): void {
-      this._sub.unsubscribe();
+      this._subParam.unsubscribe();
+      this._subAlbumsChange.unsubscribe();
+      this._subAlbums.unsubscribe();
   }
 }
