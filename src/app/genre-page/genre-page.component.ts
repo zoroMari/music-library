@@ -62,7 +62,8 @@ export class GenrePageComponent implements OnInit, OnDestroy {
     this.albums.subscribe(
       (albums) => {
         const newAlbumsArray: IAlbum[] = albums.filter((item) => {
-          return (item.name).toLowerCase().includes(value.toLowerCase())
+          return (item.name).toLowerCase().includes(value.toLowerCase()) ||
+          (item.artist.name).toLowerCase().includes(value.toLowerCase())
         });
 
         if (newAlbumsArray.length === 0) {
