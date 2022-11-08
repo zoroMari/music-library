@@ -4,16 +4,20 @@
   <p class="Albums_empty" *ngIf="noAlbums">There isn't any albums with such name</p>
   <div class="Albums">
     <div
+      *ngFor="let album of albumsArray; let i = index"
       class="Albums-Album"
+      (mouseover)="hoverElement = album"
+      (mouseleave)="hoverElement = null"
       [ngStyle]="imgStyles(album)"
-      [ngClass]="{hover: hover}"
-      (mouseenter)="handleHoverGenre()"
-      *ngFor="let album of albumsArray;
-      let i = index"
+      [ngClass]="{hover: hoverElement === album}"
     >
-      <p>{{ album.name }}</p>
+      <div class="Content">
+        <p class="Info Info-Singer">{{ album.artist.name }}</p>
+        <p class="Info Info-Name">{{ album.name }}</p>
+        <mat-icon *ngIf="isFavorite">favorite_outline</mat-icon>
+        <mat-icon *ngIf="!isFavorite">favorite_filled</mat-icon>
+      </div>
     </div>
-
   </div>
-
 </section>
+

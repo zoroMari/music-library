@@ -1,4 +1,5 @@
 export interface IAlbum {
+  artist: {name: string}
   name: string;
   image: IAlbumImage[];
 }

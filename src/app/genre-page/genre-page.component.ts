@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { GenresService } from '../genres.service';
@@ -10,9 +10,9 @@ import { IAlbum } from '../shared/album.model';
   styleUrls: ['./genre-page.component.sass']
 })
 export class GenrePageComponent implements OnInit, OnDestroy {
+  public hoverElement!: IAlbum | null;
   private _subParam!: Subscription;
   private _subAlbumsChange!: Subscription;
-  private _subAlbums!: Subscription;
 
   public albums!: Observable<IAlbum[]>;
   public albumsArray: IAlbum[] = [];
@@ -20,6 +20,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
   public noAlbums = false;
   public hover = false;
+  public isFavorite = true;
 
   constructor(
     public genresService: GenresService,
@@ -37,7 +38,10 @@ export class GenrePageComponent implements OnInit, OnDestroy {
     )
 
     this._subAlbumsChange = this._albumsChange.subscribe(
-      (albums) => this.albumsArray = albums
+      (albums) => {
+        console.log('albums >>>', albums);
+        this.albumsArray = albums
+      }
     )
   }
 
@@ -55,7 +59,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   }
 
   public handleOnSearch(value: string) {
-    this._subAlbums = this.albums.subscribe(
+    this.albums.subscribe(
       (albums) => {
         const newAlbumsArray: IAlbum[] = albums.filter((item) => {
           return (item.name).toLowerCase().includes(value.toLowerCase())
@@ -71,14 +75,8 @@ export class GenrePageComponent implements OnInit, OnDestroy {
     )
   }
 
-  public handleHoverGenre() {
-    this.hover = true;
-    console.log('TEST >>>', 'TEST');
-  }
-
   ngOnDestroy(): void {
-      this._subParam.unsubscribe();
       this._subAlbumsChange.unsubscribe();
-      this._subAlbums.unsubscribe();
+      this._subParam.unsubscribe();
   }
 }

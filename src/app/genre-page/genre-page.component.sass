@@ -31,10 +31,38 @@
       width: 100%
       aspect-ratio : 1 / 1
 
-    &-Album.hover
-      background-color: #fff !important
-      border: 10px solid #fff
+      .Content
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: center
 
-      // p
-      //   text-align: center
+        .Info
+          text-align: center
+          margin: 8px
+
+          &-Singer
+            @include font-medium
+            font-weight: 700
+
+            @media screen and (max-width: 1200px)
+              @include font-regular
+              font-weight: 700
+
+          &-Name
+            @include font-regular
+            font-weight: 700
+            margin-bottom: 24px
+
+            @media screen and (max-width: 1200px)
+              @include font-small
+              margin-bottom: 16px
+
+
+    &-Album.hover
+      background-image: none !important
+      background-color: #111
+      border: 1px solid #fff
+
+
 
