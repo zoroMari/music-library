@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Subject } from "rxjs";
-import { IAlbum, IAlbumsFromAPI } from "./shared/album.model";
+import { IAlbum, IAlbumFav, IAlbumsFromAPI } from "./shared/album.model";
 import { IGenre } from "./shared/genre.model";
 import { environment } from "src/environments/environment";
 
@@ -11,8 +11,8 @@ export class GenresService {
     private _http: HttpClient
   ) {}
 
-  private _favoriteGenres: IAlbum[] = [];
-  public favoriteGenresChanged = new Subject<IAlbum[]>();
+  private _favoriteAlbums: IAlbumFav[] = [];
+  public favoriteAlbumsChanged = new Subject<IAlbumFav[]>();
 
   public genres: IGenre[] = [
     { name: 'rock', title: 'Rock' },
@@ -23,39 +23,42 @@ export class GenresService {
     { name: 'indie', title: 'Indie' },
   ];
 
-  public fetchGenre(genre: string) {
+  public fetchAlbums(genre: string) {
     return this._http
       .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=${environment.keyForAPI}&format=json`)
       .pipe(map(
-        (data: IAlbumsFromAPI) => data.albums.album
+        (data: IAlbumsFromAPI) => data.albums.album.map((item) => ({...item, isFavorite: false}))
       ))
   }
 
-  public get favoriteGenres(): IAlbum[] | [] {
-    if (localStorage.getItem('favoriteGenres')) {
-      this._favoriteGenres = JSON.parse(localStorage.getItem('favoriteGenres') as string);
-      return this._favoriteGenres;
+  public get favoriteAlbums(): IAlbumFav[] | [] {
+    if (localStorage.getItem('favoriteAlbums')) {
+      return JSON.parse(localStorage.getItem('favoriteAlbums') as string);
     } else return [];
   }
 
-  public handleAddToFavorite(album: IAlbum) {
-    this._favoriteGenres.push(album);
-    localStorage.setItem('favoriteGenres', JSON.stringify(this._favoriteGenres));
+  public handleAddToFavorite(album: IAlbumFav) {
+    album.isFavorite = true;
+    this._favoriteAlbums = this.favoriteAlbums;
+    this._favoriteAlbums.push(album);
+    localStorage.setItem('favoriteAlbums', JSON.stringify(this._favoriteAlbums));
 
-    this.favoriteGenresChanged.next(this.favoriteGenres);
+    this.favoriteAlbumsChanged.next(this.favoriteAlbums);
   }
 
-  public handleRemoveFromFavorite(album: IAlbum) {
-    const index: number = this._favoriteGenres.indexOf(album);
+  public handleRemoveFromFavorite(album: IAlbumFav) {
+    album.isFavorite = false;
+
+    this._favoriteAlbums = this.favoriteAlbums;
+
+    const index: number = this._favoriteAlbums.findIndex((item) => {
+      return item.name === album.name && item.artist.name === album.artist.name
+    });
+
     if (index > -1) {
-      this.favoriteGenres.splice(index, 1);
-      localStorage.setItem('favoriteGenres', JSON.stringify(this._favoriteGenres));
-      this.favoriteGenresChanged.next(this.favoriteGenres);
+      this._favoriteAlbums.splice(index, 1);
+      localStorage.setItem('favoriteAlbums', JSON.stringify(this._favoriteAlbums));
+      this.favoriteAlbumsChanged.next(this.favoriteAlbums);
     }
   }
-
-
-
-
-
 }

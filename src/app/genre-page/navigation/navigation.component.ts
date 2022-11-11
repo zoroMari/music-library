@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, NgForm } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { debounceTime } from "rxjs";
@@ -10,7 +10,11 @@ import { debounceTime } from "rxjs";
 })
 export class NavigationComponent implements OnInit {
   public form!: FormGroup;
+  public favoriteisOpen = false;
+  @Input() badgeValue: number = 0;
   @Output() onSearch = new EventEmitter<string>();
+  @Output() onOpenFavorites = new EventEmitter<void>();
+  @Output() onCloseFavorite = new EventEmitter<void>();
 
   constructor(
     private _router: Router,
@@ -31,5 +35,15 @@ export class NavigationComponent implements OnInit {
 
   public handleBack() {
     this._router.navigate(['../'], {relativeTo: this._route})
+  }
+
+  public handleOpenFavorites() {
+    this.favoriteisOpen = true;
+    this.onOpenFavorites.emit();
+  }
+
+  public handleCloseFavorites() {
+    this.favoriteisOpen = false;
+    this.onCloseFavorite.emit();
   }
 }

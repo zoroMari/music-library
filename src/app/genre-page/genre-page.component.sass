@@ -49,20 +49,28 @@
               @include font-regular
               font-weight: 700
 
-          &-Name
+          &-Name,
+          &-Link
             @include font-regular
             font-weight: 700
-            margin-bottom: 24px
 
             @media screen and (max-width: 1200px)
               @include font-small
-              margin-bottom: 16px
+
+          &-Link
+            margin-bottom: 24px
+            text-decoration: underline
+            color: $color-main
+
+            @media screen and (max-width: 1200px)
+              margin-bottom: 8px
 
 
     &-Album.hover
       background-image: none !important
       background-color: #111
       border: 1px solid #fff
+
 
 
 
