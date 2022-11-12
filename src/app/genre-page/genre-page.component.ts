@@ -34,6 +34,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.favoriteAlbums.length === 0) this.noFavAlbums = true;
 
+
     this._subParam = this._route.params.subscribe(
       (params: Params) => {
         this.activeGenre = params['genre'];
@@ -64,6 +65,9 @@ export class GenrePageComponent implements OnInit, OnDestroy {
         )
       }
     )
+
+    console.log('this.favoriteAlbums >>>', this.genresService.getFavoriteAlbums(this.activeGenre));
+
 
     this._subAlbumsFiltered = this._albumsFilteredChange.subscribe(
       (albums) => {

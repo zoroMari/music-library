@@ -35,6 +35,7 @@ export class GenresService {
 
   public getFavoriteAlbums(genre: string): IAlbumFav[] | [] {
     if (localStorage.getItem('favoriteAlbums')) {
+      this._favoriteAlbumsAll = JSON.parse(localStorage.getItem('favoriteAlbums') as string);
       if (this._favoriteAlbumsAll.hasOwnProperty(genre)) {
         return this._favoriteAlbumsAll[genre];
       } else return [];
