@@ -16,6 +16,10 @@ export interface IAlbumsFromAPI {
   albums: IAlbumsObject;
 }
 
+export interface favoriteAlbumsInStorage {
+  [genre: string]: IAlbumFav[];
+}
+
 interface IAlbumImage {
   '#text': string;
   size: string;

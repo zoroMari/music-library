@@ -15,6 +15,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   private _subAlbumsFiltered!: Subscription;
   private _subFavoriteAlbumsChange!: Subscription;
 
+  public activeGenre: string = '';
   public albums!: Observable<IAlbumFav[]>;
   public albumsToShow: IAlbumFav[] = [];
   public albumsAll: IAlbumFav[] = [];
@@ -31,12 +32,14 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.favoriteAlbums = this.genresService.favoriteAlbums;
-
     if (this.favoriteAlbums.length === 0) this.noFavAlbums = true;
 
     this._subParam = this._route.params.subscribe(
       (params: Params) => {
+        this.activeGenre = params['genre'];
+        this.favoriteAlbums = this.genresService.getFavoriteAlbums(this.activeGenre);
+        if (this.favoriteAlbums.length > 0) this.noFavAlbums = false;
+
         this.albums = this.genresService.fetchAlbums(params['genre']).pipe(
           map((albums) => {
             const albumsWithFav: IAlbumFav[] = [];
@@ -68,7 +71,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       }
     )
 
-    this._subFavoriteAlbumsChange = this.genresService.favoriteAlbumsChanged.subscribe(
+    this._subFavoriteAlbumsChange = this.genresService.favoriteAlbumsByGenreChanged.subscribe(
       (favoriteAlbums) => {
         this.noFavAlbums = favoriteAlbums.length === 0;
         this.favoriteAlbums = favoriteAlbums;
@@ -100,11 +103,12 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   }
 
   handleAddToFavorite(album: IAlbumFav) {
-    this.genresService.handleAddToFavorite(album);
+    console.log('this.activeGenre >>>', this.activeGenre);
+    this.genresService.handleAddToFavorite(this.activeGenre, album);
   }
 
   handleRemoveFromFavorite(album: IAlbumFav) {
-    this.genresService.handleRemoveFromFavorite(album);
+    this.genresService.handleRemoveFromFavorite(this.activeGenre, album);
 
     if (this.favoriteFilterOn) this._albumsFilteredChange.next(this.favoriteAlbums);
   }
