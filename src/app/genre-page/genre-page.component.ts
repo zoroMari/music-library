@@ -11,9 +11,7 @@ import { IAlbum, IAlbumFav } from '../shared/album.model';
 })
 export class GenrePageComponent implements OnInit, OnDestroy {
   public hoverElement!: IAlbum | null;
-  private _subParam!: Subscription;
-  private _subAlbumsFiltered!: Subscription;
-  private _subFavoriteAlbumsChange!: Subscription;
+  private _sub!: Subscription;
 
   public activeGenre: string = '';
   public albums!: Observable<IAlbumFav[]>;
@@ -34,8 +32,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.favoriteAlbums.length === 0) this.noFavAlbums = true;
 
-
-    this._subParam = this._route.params.subscribe(
+    this._sub = this._route.params.subscribe(
       (params: Params) => {
         this.activeGenre = params['genre'];
         this.favoriteAlbums = this.genresService.getFavoriteAlbums(this.activeGenre);
@@ -66,21 +63,18 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       }
     )
 
-    console.log('this.favoriteAlbums >>>', this.genresService.getFavoriteAlbums(this.activeGenre));
-
-
-    this._subAlbumsFiltered = this._albumsFilteredChange.subscribe(
+    this._sub.add(this._albumsFilteredChange.subscribe(
       (albums) => {
         this.albumsToShow = albums
       }
-    )
+    ))
 
-    this._subFavoriteAlbumsChange = this.genresService.favoriteAlbumsByGenreChanged.subscribe(
+    this._sub.add(this.genresService.favoriteAlbumsByGenreChanged.subscribe(
       (favoriteAlbums) => {
         this.noFavAlbums = favoriteAlbums.length === 0;
         this.favoriteAlbums = favoriteAlbums;
       }
-    )
+    ))
   }
 
   public imgStyles(album: IAlbumFav) {
@@ -132,8 +126,6 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._subAlbumsFiltered.unsubscribe();
-    this._subParam.unsubscribe();
-    this._subFavoriteAlbumsChange.unsubscribe();
+    this._sub.unsubscribe();
   }
 }
