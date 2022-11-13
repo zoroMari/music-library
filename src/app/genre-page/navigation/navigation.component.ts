@@ -41,14 +41,12 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public handleOpenFavorites() {
     this.favoriteisOpen = true;
     this.onOpenFavorites.emit();
-    this._sub.unsubscribe();
     this.form.reset();
   }
 
   public handleCloseFavorites() {
     this.favoriteisOpen = false;
     this.onCloseFavorite.emit();
-    this._sub.unsubscribe();
     this.form.reset();
   }
 
