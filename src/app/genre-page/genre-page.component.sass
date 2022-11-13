@@ -4,6 +4,11 @@
   height: 100vh
   overflow-y: scroll !important
 
+  .Albums_empty
+    @include font-regular
+    width: 100%
+    margin: 48px 24px
+
   .Albums
     scroll-behavior: smooth
     display: grid
@@ -21,12 +26,51 @@
       display: flex
       justify-content: center
       align-items: center
-      // background-color: $color-rock
       border-radius: $border-radius-small
       overflow: hidden
       width: 100%
       aspect-ratio : 1 / 1
 
-      p
-        text-align: center
+      .Content
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: center
+
+        .Info
+          text-align: center
+          margin: 8px
+
+          &-Singer
+            @include font-medium
+            font-weight: 700
+
+            @media screen and (max-width: 1200px)
+              @include font-regular
+              font-weight: 700
+
+          &-Name,
+          &-Link
+            @include font-regular
+            font-weight: 700
+
+            @media screen and (max-width: 1200px)
+              @include font-small
+
+          &-Link
+            margin-bottom: 24px
+            text-decoration: underline
+            color: $color-main
+
+            @media screen and (max-width: 1200px)
+              margin-bottom: 8px
+
+
+    &-Album.hover
+      background-image: none !important
+      background-color: #111
+      border: 1px solid #fff
+
+
+
 

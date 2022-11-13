@@ -9,14 +9,12 @@
       <span>Back</span>
     </button>
 
-    <form class="test" #form="ngForm" (ngSubmit)="handleSubmit(form)">
+    <form class="test" [formGroup]="form">
       <mat-form-field appearance="outline" class="Search">
         <mat-label>Search</mat-label>
         <input
           matInput
-          ngModel
-          name="search"
-          #search="ngModel"
+          formControlName="search"
         >
       </mat-form-field>
     </form>
@@ -24,8 +22,24 @@
 
   <span class="Spacer"></span>
 
-  <button mat-icon-button color="secondary" class="Favorite">
-    <mat-icon matBadge="0" matBadgeColor="warn">favorite</mat-icon>
+  <button
+    *ngIf="!favoriteisOpen"
+    mat-icon-button
+    color="secondary"
+    class="Favorite"
+    (click)="handleOpenFavorites()"
+  >
+    <mat-icon [matBadge]="badgeValue" matBadgeColor="warn">favorite</mat-icon>
+  </button>
+
+  <button
+    *ngIf="favoriteisOpen"
+    mat-icon-button
+    color="accent"
+    class="Favorite"
+    (click)="handleCloseFavorites()"
+  >
+    <mat-icon [matBadge]="badgeValue" matBadgeColor="warn">favorite</mat-icon>
   </button>
 
 </mat-toolbar>

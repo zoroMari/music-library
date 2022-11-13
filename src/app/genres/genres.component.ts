@@ -22,6 +22,5 @@ export class GenresComponent implements OnInit {
 
   public handleOpenGenre(genre: string) {
       this._router.navigate(['', genre]);
-      // this._genresService.fetchGenre(genre);
   }
 }
