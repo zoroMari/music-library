@@ -91,17 +91,24 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   }
 
   public handleOnSearch(value: string) {
-    const newAlbumsArray: IAlbumFav[] = this.albumsAll.filter((item) => {
-      return (item.name).toLowerCase().includes(value.toLowerCase()) ||
-      (item.artist.name).toLowerCase().includes(value.toLowerCase())
-    });
+    let newAlbumsArray: IAlbumFav[] = [];
+    if (this.favoriteFilterOn) {
+      newAlbumsArray = this.favoriteAlbums.filter((item) => {
+        return (item.name).toLowerCase().includes(value.toLowerCase()) ||
+        (item.artist.name).toLowerCase().includes(value.toLowerCase())
+      });
+    } else {
+      newAlbumsArray = this.albumsAll.filter((item) => {
+        return (item.name).toLowerCase().includes(value.toLowerCase()) ||
+        (item.artist.name).toLowerCase().includes(value.toLowerCase())
+      });
+    }
 
     this.noAlbums = newAlbumsArray.length === 0;
     this._albumsFilteredChange.next(newAlbumsArray);
   }
 
   handleAddToFavorite(album: IAlbumFav) {
-    console.log('this.activeGenre >>>', this.activeGenre);
     this.genresService.handleAddToFavorite(this.activeGenre, album);
   }
 
