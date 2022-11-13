@@ -1,27 +1,22 @@
 # MusicLibrary
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.5.
+See demo by [this link](https://zoromari.github.io/music-library/) 
 
-## Development server
+## Functionality
+This is your library of music in main genres. 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+![all-genres](./src/assets/screenshots/genres.png)
 
-## Code scaffolding
+You can find the most popular albums in the selected genre, find out the album title and singer name, and go to the page to listen to songs from the album. 
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+You can also add albums into your favorites and use it to store and filter them as well as use the seach input to find necessary albums by title or singer. 
 
-## Build
+![all-genres](./src/assets/screenshots/genrePage.png)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Technologies:
+This project was generated with Angular CLI version 14.0.5. For this project, I used the Material components and theme. API for music albums: https://www.last.fm/api
 
-## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
