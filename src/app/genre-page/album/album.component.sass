@@ -1,9 +1,9 @@
 @import '../../shared/variables'
 
 .Wrapper
-  height: 100vh
+  height: 100%
   overflow-y: scroll !important
-  padding-bottom: 80px
+  padding-bottom: 24px
 
   .Albums_empty
     @include font-regular
@@ -19,6 +19,8 @@
 
     @media screen and (max-width: 1200px)
       padding: 48px 24px
+      grid-template-columns: repeat(3, 1fr)
+
 
     @media screen and (max-width: 500px)
       grid-template-columns: repeat(1, 1fr)

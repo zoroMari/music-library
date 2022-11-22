@@ -10,6 +10,7 @@ export interface IAlbumFav extends IAlbum {
 
 export interface IAlbumsObject {
   album: IAlbum[];
+  '@attr': IAlbumInfo;
 }
 
 export interface IAlbumsFromAPI {
@@ -23,5 +24,13 @@ export interface favoriteAlbumsInStorage {
 interface IAlbumImage {
   '#text': string;
   size: string;
+}
+
+export interface IAlbumInfo {
+  tag: string;
+  page: string;
+  perPage: string;
+  totalPages: string;
+  total: string;
 }
 

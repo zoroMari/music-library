@@ -1,17 +1,36 @@
-<app-navigation
-  (onSearch)="handleOnSearch($event)"
-  (onOpenFavorites)="handleOpenFavorites($event)"
-  (onCloseFavorite)="handleCloseFavorites($event)"
-  [badgeValue]="this.genresService.favoriteAlbumsByGenre.getValue().length"
->
-</app-navigation>
+<section>
+  <app-navigation
+    (onSearch)="handleOnSearch($event)"
+    (onOpenFavorites)="handleOpenFavorites($event)"
+    (onCloseFavorite)="handleCloseFavorites($event)"
+    [badgeValue]="this.genresService.favoriteAlbumsByGenre.getValue().length"
+  >
+  </app-navigation>
 
-<router-outlet></router-outlet>
+  <section class="Albums">
+    <router-outlet
+      *ngIf="favoriteFilterOn"
+    >
+    </router-outlet>
 
-<app-album
-  *ngIf="!favoriteFilterOn"
-  [albumsToShow]="albumsToShow"
-  [activeGenre]="this.genresService.activeGenre"
->
-</app-album>
+    <app-album
+      *ngIf="!favoriteFilterOn"
+      [albumsToShow]="albumsToShow"
+      [activeGenre]="this.genresService.activeGenre"
+    >
+    </app-album>
+  </section>
+
+  <mat-paginator
+    [length]="currentItems"
+    [pageIndex]="0"
+    [hidePageSize]="true"
+    showPageSizeOptions="true"
+    aria-label="Select page"
+    (page)="handlePageEvent($event)"
+  >
+  </mat-paginator>
+</section>
+
+
 

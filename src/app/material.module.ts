@@ -6,6 +6,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatInputModule} from '@angular/material/input';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
 
@@ -16,6 +17,7 @@ import {MatInputModule} from '@angular/material/input';
     MatSidenavModule,
     MatBadgeModule,
     MatInputModule,
+    MatPaginatorModule,
   ],
   exports: [
     MatButtonModule,
@@ -24,6 +26,7 @@ import {MatInputModule} from '@angular/material/input';
     MatSidenavModule,
     MatBadgeModule,
     MatInputModule,
+    MatPaginatorModule,
   ]
 })
 export class MaterialModule {

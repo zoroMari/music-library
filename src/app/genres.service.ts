@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, Subject } from "rxjs";
-import { favoriteAlbumsInStorage, IAlbum, IAlbumFav, IAlbumsFromAPI } from "./shared/album.model";
+import { BehaviorSubject, map, tap } from "rxjs";
+import { favoriteAlbumsInStorage, IAlbumFav, IAlbumsFromAPI, IAlbumInfo } from "./shared/album.model";
 import { IGenre } from "./shared/genre.model";
 import { environment } from "src/environments/environment";
 
@@ -18,6 +18,13 @@ export class GenresService {
   public favoriteAlbumsByGenre = new BehaviorSubject<IAlbumFav[]>([]);
   // public favoriteAlbums: IAlbumFav[] = [];
   public activeGenre!: string;
+  public albumsInfo = new BehaviorSubject<IAlbumInfo>({
+    tag: '',
+    page: '',
+    perPage: '',
+    totalPages: '',
+    total: '',
+  });
 
   public genres: IGenre[] = [
     { name: 'rock', title: 'Rock' },
@@ -28,11 +35,18 @@ export class GenresService {
     { name: 'indie', title: 'Indie' },
   ];
 
-  public fetchAlbums(genre: string) {
+  public fetchAlbums(genre: string, page: number) {
     return this._http
-      .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=${environment.keyForAPI}&format=json`)
-      .pipe(map(
-        (data: IAlbumsFromAPI) => data.albums.album.map((item) => ({...item, isFavorite: false}))
+      .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&page=${page}&api_key=${environment.keyForAPI}&format=json`)
+      .pipe(
+        tap(
+          (data: IAlbumsFromAPI) => {
+            this.albumsInfo.next(data.albums["@attr"]);
+            return data
+          }
+        ),
+        map(
+          (data: IAlbumsFromAPI) => data.albums.album.map((item) => ({...item, isFavorite: false}))
       ))
   }
 

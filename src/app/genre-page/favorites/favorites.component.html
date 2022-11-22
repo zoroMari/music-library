@@ -1,3 +1,5 @@
+<p class="Albums_empty" *ngIf="noFavAlbums">There aren't any favorite albums</p>
+
 <app-album
  [albumsToShow]="favoriteAlbums"
  [activeGenre]="this.genresService.activeGenre"
