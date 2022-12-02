@@ -13,11 +13,15 @@ export class GenresService {
     private _http: HttpClient
   ) {}
 
+  public isLoaded = new BehaviorSubject<boolean>(false);
+  public favoriteFilterOn = false;
+
   private _favoriteAlbumsAll: favoriteAlbumsInStorage = {};
   public albumsToShowByGenre = new BehaviorSubject<IAlbumFav[]>([]);
   public favoriteAlbumsByGenre = new BehaviorSubject<IAlbumFav[]>([]);
   // public favoriteAlbums: IAlbumFav[] = [];
   public activeGenre!: string;
+  public query: number = 0;
   public albumsInfo = new BehaviorSubject<IAlbumInfo>({
     tag: '',
     page: '',

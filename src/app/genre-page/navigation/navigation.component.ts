@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup, NgForm } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { debounceTime, Subscription } from "rxjs";
 
@@ -19,7 +19,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   constructor(
     private _router: Router,
-    private _route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {

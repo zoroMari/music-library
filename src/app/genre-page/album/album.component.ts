@@ -19,6 +19,7 @@ export class AlbumComponent {
   public imgStyles(album: IAlbumFav) {
     return {
       'background-image': `${this.getAlbumImg(album)}`,
+      'background-color': '#000',
       'background-repeat': 'no-repeat',
       'background-position': 'center',
       'background-size': 'cover'

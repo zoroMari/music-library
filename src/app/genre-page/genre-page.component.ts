@@ -15,14 +15,14 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   private _albumsFilteredChange = new Subject<IAlbumFav[]>();
   public currentItems: number = 0;
   public allItems: number = 0;
-  private _page: number = 0;
+  public pageIndex: number = 1;
+  private _test = 'test';
 
   public albums!: Observable<IAlbumFav[]>;
   // public albumsAll: IAlbumFav[] = [];
   public albumsToShow!: IAlbumFav[];
 
   public noAlbums = false;
-  public favoriteFilterOn = false;
 
   constructor(
     public genresService: GenresService,
@@ -34,13 +34,20 @@ export class GenrePageComponent implements OnInit, OnDestroy {
     this._sub = this._route.params.subscribe(
       (params: Params) => {
         this.genresService.activeGenre = params['genre'];
-        this._initialization(this.genresService.activeGenre, 1);
       }
-    )
+    );
+
+    this._sub.add(this._route.queryParams.subscribe(
+      (params: Params) => {
+        this.pageIndex = params['page'];
+        this._initialization(this.genresService.activeGenre, this.pageIndex);
+      }
+    ))
 
     this._sub.add(this.genresService.albumsToShowByGenre.subscribe(
       (albums) => {
         this.albumsToShow = albums;
+        this.genresService.isLoaded.next(true);
       }
     ))
 
@@ -50,7 +57,6 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       }
     ))
   }
-
 
   // public handleOnSearch(value: string) {
   //   let newAlbumsArray: IAlbumFav[] = [];
@@ -72,16 +78,15 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
   public handleOnSearch(value: string) {}
 
-
   handleOpenFavorites(isFavorites: boolean) {
-    this.favoriteFilterOn = isFavorites;
-    this._router.navigate(['favorites'], { relativeTo: this._route });
+    this.genresService.favoriteFilterOn = isFavorites;
+    this._router.navigate(['./favorites'], { relativeTo: this._route, queryParamsHandling: 'preserve' });
   }
 
   handleCloseFavorites(isFavorites: boolean) {
-    this._router.navigate(['./'], { relativeTo: this._route });
-    this._initialization(this.genresService.activeGenre, 1);
-    this.favoriteFilterOn = isFavorites;
+    this._router.navigate(['./'], { relativeTo: this._route,  queryParamsHandling: 'preserve' });
+    this._initialization(this.genresService.activeGenre,  this.pageIndex);
+    this.genresService.favoriteFilterOn = isFavorites;
   }
 
   private _checkIsFavortite(array: IAlbumFav[]) {
@@ -111,17 +116,19 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       (albums: IAlbumFav[]) => {
         this.currentItems = +this.genresService.albumsInfo.getValue().perPage;
         this.currentItems = +this.genresService.albumsInfo.getValue().total;
-        // this.albumsAll = albums;
         this.genresService.albumsToShowByGenre.next(albums);
       }
     )
   }
 
   public handlePageEvent(e: PageEvent) {
-    this._sub.add(this._initialization(this.genresService.activeGenre, e.pageIndex + 1))
-}
+    const page =  e.pageIndex + 1;
+    this.pageIndex = page;
+    this._router.navigate( [], { queryParams: { page: page } });
+  }
 
   ngOnDestroy(): void {
-    this._sub.unsubscribe();
+    this.genresService.isLoaded.next(false);
+    this._sub.unsubscribe()
   }
 }

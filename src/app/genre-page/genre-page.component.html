@@ -7,14 +7,15 @@
   >
   </app-navigation>
 
-  <section class="Albums">
+  <section class="Albums" *ngIf="this.genresService.isLoaded.getValue()">
     <router-outlet
-      *ngIf="favoriteFilterOn"
+      *ngIf="this.genresService.favoriteFilterOn"
     >
     </router-outlet>
 
     <app-album
-      *ngIf="!favoriteFilterOn"
+      #album
+      *ngIf="!this.genresService.favoriteFilterOn"
       [albumsToShow]="albumsToShow"
       [activeGenre]="this.genresService.activeGenre"
     >
@@ -22,8 +23,10 @@
   </section>
 
   <mat-paginator
+    #paginator
+    *ngIf="this.genresService.isLoaded.getValue() && !this.genresService.favoriteFilterOn"
     [length]="currentItems"
-    [pageIndex]="0"
+    [pageIndex]="this.pageIndex - 1"
     [hidePageSize]="true"
     showPageSizeOptions="true"
     aria-label="Select page"

@@ -31,6 +31,7 @@ export class FavoritesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.genresService.favoriteFilterOn = false;
     this._sub.unsubscribe();
   }
 
