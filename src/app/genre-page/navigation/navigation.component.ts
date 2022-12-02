@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup, NgForm } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { debounceTime, Subscription } from "rxjs";
 
@@ -14,12 +14,11 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private _sub!: Subscription;
   @Input() badgeValue: number = 0;
   @Output() onSearch = new EventEmitter<string>();
-  @Output() onOpenFavorites = new EventEmitter<void>();
-  @Output() onCloseFavorite = new EventEmitter<void>();
+  @Output() onOpenFavorites = new EventEmitter<boolean>();
+  @Output() onCloseFavorite = new EventEmitter<boolean>();
 
   constructor(
     private _router: Router,
-    private _route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -35,18 +34,18 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   public handleBack() {
-    this._router.navigate(['../'], {relativeTo: this._route})
+    this._router.navigate([''])
   }
 
   public handleOpenFavorites() {
     this.favoriteisOpen = true;
-    this.onOpenFavorites.emit();
+    this.onOpenFavorites.emit(true);
     this.form.reset();
   }
 
   public handleCloseFavorites() {
     this.favoriteisOpen = false;
-    this.onCloseFavorite.emit();
+    this.onCloseFavorite.emit(false);
     this.form.reset();
   }
 

@@ -1,45 +1,39 @@
-<app-navigation
-  (onSearch)="handleOnSearch($event)"
-  (onOpenFavorites)="handleOpenFavorites()"
-  (onCloseFavorite)="handleCloseFavorites()"
-  [badgeValue]="favoriteAlbums.length"
->
-</app-navigation>
+<section>
+  <app-navigation
+    (onSearch)="handleOnSearch($event)"
+    (onOpenFavorites)="handleOpenFavorites($event)"
+    (onCloseFavorite)="handleCloseFavorites($event)"
+    [badgeValue]="this.genresService.favoriteAlbumsByGenre.getValue().length"
+  >
+  </app-navigation>
 
-<section class="Wrapper">
-  <p class="Albums_empty" *ngIf="noAlbums">There isn't any albums with such name</p>
-  <p class="Albums_empty" *ngIf="noFavAlbums && favoriteFilterOn">There isn't any favorite albums</p>
-  <div class="Albums">
-    <div
-      *ngFor="let album of albumsToShow; let i = index"
-      class="Albums-Album"
-      (mouseover)="hoverElement = album"
-      (mouseleave)="hoverElement = null"
-      [ngStyle]="imgStyles(album)"
-      [ngClass]="{hover: hoverElement === album}"
+  <section class="Albums" *ngIf="this.genresService.isLoaded.getValue()">
+    <router-outlet
+      *ngIf="this.genresService.favoriteFilterOn"
     >
-      <div class="Content" *ngIf="hoverElement === album">
-        <p class="Info Info-Singer">{{ album.artist.name }}</p>
-        <p class="Info Info-Name">{{ album.name }}</p>
-        <a class="Info Info-Link" [href]="album.url" target="_blank">Go to song</a>
-        <button
-          *ngIf="!album.isFavorite"
-          mat-icon-button
-          aria-label="Add to favorites"
-          (click)="handleAddToFavorite(album)"
-        >
-          <mat-icon>favorite_outline</mat-icon>
-        </button>
-        <button
-          *ngIf="album.isFavorite"
-          mat-icon-button
-          aria-label="Remove from favorites"
-          (click)="handleRemoveFromFavorite(album)"
-        >
-          <mat-icon>favorite</mat-icon>
-        </button>
-      </div>
-    </div>
-  </div>
+    </router-outlet>
+
+    <app-album
+      #album
+      *ngIf="!this.genresService.favoriteFilterOn"
+      [albumsToShow]="albumsToShow"
+      [activeGenre]="this.genresService.activeGenre"
+    >
+    </app-album>
+  </section>
+
+  <mat-paginator
+    #paginator
+    *ngIf="this.genresService.isLoaded.getValue() && !this.genresService.favoriteFilterOn"
+    [length]="currentItems"
+    [pageIndex]="this.pageIndex - 1"
+    [hidePageSize]="true"
+    showPageSizeOptions="true"
+    aria-label="Select page"
+    (page)="handlePageEvent($event)"
+  >
+  </mat-paginator>
 </section>
+
+
 

@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Subject } from "rxjs";
-import { favoriteAlbumsInStorage, IAlbum, IAlbumFav, IAlbumsFromAPI } from "./shared/album.model";
+import { BehaviorSubject, map, tap } from "rxjs";
+import { favoriteAlbumsInStorage, IAlbumFav, IAlbumsFromAPI, IAlbumInfo } from "./shared/album.model";
 import { IGenre } from "./shared/genre.model";
 import { environment } from "src/environments/environment";
 
@@ -13,8 +13,22 @@ export class GenresService {
     private _http: HttpClient
   ) {}
 
+  public isLoaded = new BehaviorSubject<boolean>(false);
+  public favoriteFilterOn = false;
+
   private _favoriteAlbumsAll: favoriteAlbumsInStorage = {};
-  public favoriteAlbumsByGenreChanged = new Subject<IAlbumFav[]>();
+  public albumsToShowByGenre = new BehaviorSubject<IAlbumFav[]>([]);
+  public favoriteAlbumsByGenre = new BehaviorSubject<IAlbumFav[]>([]);
+  // public favoriteAlbums: IAlbumFav[] = [];
+  public activeGenre!: string;
+  public query: number = 0;
+  public albumsInfo = new BehaviorSubject<IAlbumInfo>({
+    tag: '',
+    page: '',
+    perPage: '',
+    totalPages: '',
+    total: '',
+  });
 
   public genres: IGenre[] = [
     { name: 'rock', title: 'Rock' },
@@ -25,11 +39,18 @@ export class GenresService {
     { name: 'indie', title: 'Indie' },
   ];
 
-  public fetchAlbums(genre: string) {
+  public fetchAlbums(genre: string, page: number) {
     return this._http
-      .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&api_key=${environment.keyForAPI}&format=json`)
-      .pipe(map(
-        (data: IAlbumsFromAPI) => data.albums.album.map((item) => ({...item, isFavorite: false}))
+      .get<IAlbumsFromAPI>(`http://ws.audioscrobbler.com/2.0/?method=tag.gettopalbums&tag=${genre}&page=${page}&api_key=${environment.keyForAPI}&format=json`)
+      .pipe(
+        tap(
+          (data: IAlbumsFromAPI) => {
+            this.albumsInfo.next(data.albums["@attr"]);
+            return data
+          }
+        ),
+        map(
+          (data: IAlbumsFromAPI) => data.albums.album.map((item) => ({...item, isFavorite: false}))
       ))
   }
 
@@ -37,6 +58,8 @@ export class GenresService {
     if (localStorage.getItem('favoriteAlbums')) {
       this._favoriteAlbumsAll = JSON.parse(localStorage.getItem('favoriteAlbums') as string);
       if (this._favoriteAlbumsAll.hasOwnProperty(genre)) {
+        this.favoriteAlbumsByGenre.next(this._favoriteAlbumsAll[genre]);
+
         return this._favoriteAlbumsAll[genre];
       } else return [];
     } else return [];
@@ -59,7 +82,7 @@ export class GenresService {
 
     localStorage.setItem(`favoriteAlbums`, JSON.stringify(this._favoriteAlbumsAll));
 
-    this.favoriteAlbumsByGenreChanged.next(this.getFavoriteAlbums(genre));
+    this.favoriteAlbumsByGenre.next(this.getFavoriteAlbums(genre));
   }
 
   public handleRemoveFromFavorite(genre: string, album: IAlbumFav) {
@@ -72,7 +95,7 @@ export class GenresService {
     if (index > -1) {
       this._favoriteAlbumsAll[genre].splice(index, 1);
       localStorage.setItem('favoriteAlbums', JSON.stringify(this._favoriteAlbumsAll));
-      this.favoriteAlbumsByGenreChanged.next(this.getFavoriteAlbums(genre));
+      this.favoriteAlbumsByGenre.next(this.getFavoriteAlbums(genre));
     }
   }
 }

@@ -1,76 +1,10 @@
 @import '../shared/variables'
 
-.Wrapper
+section
   height: 100vh
-  overflow-y: scroll !important
-
-  .Albums_empty
-    @include font-regular
-    width: 100%
-    margin: 48px 24px
+  display: flex
+  flex-direction: column
 
   .Albums
-    scroll-behavior: smooth
-    display: grid
-    padding: 48px 48px
-    grid-template-columns: repeat(5, 1fr)
-    gap: 24px
-
-    @media screen and (max-width: 1200px)
-      padding: 48px 24px
-
-    @media screen and (max-width: 500px)
-      grid-template-columns: repeat(1, 1fr)
-
-    &-Album
-      display: flex
-      justify-content: center
-      align-items: center
-      border-radius: $border-radius-small
-      overflow: hidden
-      width: 100%
-      aspect-ratio : 1 / 1
-
-      .Content
-        display: flex
-        flex-direction: column
-        justify-content: center
-        align-items: center
-
-        .Info
-          text-align: center
-          margin: 8px
-
-          &-Singer
-            @include font-medium
-            font-weight: 700
-
-            @media screen and (max-width: 1200px)
-              @include font-regular
-              font-weight: 700
-
-          &-Name,
-          &-Link
-            @include font-regular
-            font-weight: 700
-
-            @media screen and (max-width: 1200px)
-              @include font-small
-
-          &-Link
-            margin-bottom: 24px
-            text-decoration: underline
-            color: $color-main
-
-            @media screen and (max-width: 1200px)
-              margin-bottom: 8px
-
-
-    &-Album.hover
-      background-image: none !important
-      background-color: #111
-      border: 1px solid #fff
-
-
-
-
+    height: 100%
+    overflow-y: scroll !important
