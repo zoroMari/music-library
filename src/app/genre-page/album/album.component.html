@@ -10,7 +10,7 @@
       [ngClass]="{hover: hoverElement === album}"
     >
       <div class="Content" *ngIf="hoverElement === album">
-        <p class="Info Info-Singer">{{ album.artist.name }}</p>
+        <p class="Info Info-Singer" *ngIf="album.artist">{{ album.artist.name }}</p>
         <p class="Info Info-Name">{{ album.name }}</p>
         <a class="Info Info-Link" [href]="album.url" target="_blank">Go to song</a>
         <button

@@ -9,21 +9,27 @@
       <span>Back</span>
     </button>
 
-    <!-- <form class="test" [formGroup]="form">
-      <mat-form-field appearance="outline" class="Search">
+    <form class="test" [formGroup]="form">
+      <mat-form-field appearance="outline" class="Search" (click)="handleOnSearch()">
         <mat-label>Search</mat-label>
         <input
           matInput
           formControlName="search"
         >
       </mat-form-field>
-    </form> -->
+    </form>
+
+    <button mat-icon-button *ngIf="this.genresService.searchFilterOn" (click)="handleCloseSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
+
+
 
   <span class="Spacer"></span>
 
   <button
-    *ngIf="!favoriteisOpen"
+    *ngIf="!this.genresService.favoriteFilterOn"
     mat-icon-button
     color="secondary"
     class="Favorite"
@@ -33,7 +39,7 @@
   </button>
 
   <button
-    *ngIf="favoriteisOpen"
+    *ngIf="this.genresService.favoriteFilterOn"
     mat-icon-button
     color="accent"
     class="Favorite"

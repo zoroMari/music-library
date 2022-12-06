@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, tap } from "rxjs";
-import { favoriteAlbumsInStorage, IAlbumFav, IAlbumsFromAPI, IAlbumInfo } from "./shared/album.model";
+import { BehaviorSubject, map, Observable, tap } from "rxjs";
+import { favoriteAlbumsInStorage, IAlbumFav, IAlbumsFromAPI, IAlbumInfo, IAlbumsFromAPIForSearchBySong } from "./shared/album.model";
 import { IGenre } from "./shared/genre.model";
 import { environment } from "src/environments/environment";
 
@@ -15,11 +15,13 @@ export class GenresService {
 
   public isLoaded = new BehaviorSubject<boolean>(false);
   public favoriteFilterOn = false;
+  public searchFilterOn = false;
+  public searchValue = new BehaviorSubject<string>('');
 
   private _favoriteAlbumsAll: favoriteAlbumsInStorage = {};
   public albumsToShowByGenre = new BehaviorSubject<IAlbumFav[]>([]);
   public favoriteAlbumsByGenre = new BehaviorSubject<IAlbumFav[]>([]);
-  // public favoriteAlbums: IAlbumFav[] = [];
+  public favoriteAlbumsBySearch = new BehaviorSubject<IAlbumFav[]>([]);
   public activeGenre!: string;
   public query: number = 0;
   public albumsInfo = new BehaviorSubject<IAlbumInfo>({
@@ -98,4 +100,39 @@ export class GenresService {
       this.favoriteAlbumsByGenre.next(this.getFavoriteAlbums(genre));
     }
   }
+
+  public searchAlbums(genre: string, name: string, page: number): Observable<IAlbumFav[] | undefined> {
+    return this._http
+      .get<IAlbumsFromAPIForSearchBySong>(`http://ws.audioscrobbler.com/2.0/?method=album.search&album=${name}&page=${page}&api_key=${environment.keyForAPI}&format=json`)
+      .pipe(
+        tap(
+          (data: IAlbumsFromAPIForSearchBySong) => {
+            const perPage = data.results["opensearch:itemsPerPage"];
+            const total = data.results["opensearch:totalResults"];
+
+            this.albumsInfo.next({
+              tag: '',
+              page: '',
+              perPage: perPage,
+              totalPages: '',
+              total: total,
+            })
+            return data
+          }
+        ),
+        map(
+          (data: IAlbumsFromAPIForSearchBySong) => {
+            return data.results.albummatches?.album.map((item) => ({...item, isFavorite: false}))
+          }
+      ))
+  }
+
+  public searchInFavorite(name: string, albums: IAlbumFav[]) {
+    if (!name) this.favoriteAlbumsBySearch.next(albums);
+    else this.favoriteAlbumsBySearch.next(albums.filter((item) => {
+      return item.name.toLowerCase().includes(name.toLowerCase())
+      || item.artist?.name?.toLowerCase().includes(name.toLowerCase())
+    }));
+  }
+
 }

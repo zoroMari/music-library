@@ -1,20 +1,17 @@
 <section>
   <app-navigation
-    (onSearch)="handleOnSearch($event)"
-    (onOpenFavorites)="handleOpenFavorites($event)"
-    (onCloseFavorite)="handleCloseFavorites($event)"
+    (onCloseSearch)="handleOnCloseSearch()"
+    (onOpenFavorites)="handleOpenFavorites()"
+    (onCloseFavorite)="handleCloseFavorites()"
     [badgeValue]="this.genresService.favoriteAlbumsByGenre.getValue().length"
   >
   </app-navigation>
 
   <section class="Albums" *ngIf="this.genresService.isLoaded.getValue()">
-    <router-outlet
-      *ngIf="this.genresService.favoriteFilterOn"
-    >
+    <router-outlet #router>
     </router-outlet>
 
     <app-album
-      #album
       *ngIf="!this.genresService.favoriteFilterOn"
       [albumsToShow]="albumsToShow"
       [activeGenre]="this.genresService.activeGenre"
@@ -23,7 +20,6 @@
   </section>
 
   <mat-paginator
-    #paginator
     *ngIf="this.genresService.isLoaded.getValue() && !this.genresService.favoriteFilterOn"
     [length]="currentItems"
     [pageIndex]="this.pageIndex - 1"
