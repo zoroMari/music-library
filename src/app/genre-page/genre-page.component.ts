@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { map, Observable, Subject, Subscription, tap } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { GenresService } from '../genres.service';
 import { IAlbumFav } from '../shared/album.model';
 
@@ -29,6 +29,8 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.noAlbums = false;
+
     this._sub = this._route.params.subscribe(
       (params: Params) => {
         this.genresService.activeGenre = params['genre'];
@@ -52,6 +54,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
     this._sub.add(this.genresService.searchValue.subscribe(
       (value) => {
         this.handleOnSearch(value)
+        // if (this.albumsToShow.length === 0) this.noAlbums = true;
       }
     ))
   }
@@ -130,6 +133,10 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
           if (!albums) return
           this.albumsToShow = albums;
+
+          if (this.albumsToShow.length === 0) this.noAlbums = true;
+          else this.noAlbums = false;
+
         }
       )
     }
@@ -139,6 +146,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   public handleOnCloseSearch() {
     this.genresService.searchFilterOn = false;
     this.pageIndex = 1;
+    this.noAlbums = false;
 
     if (this.genresService.favoriteFilterOn) {
       this.genresService.searchInFavorite(

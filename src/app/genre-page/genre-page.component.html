@@ -3,24 +3,29 @@
     (onCloseSearch)="handleOnCloseSearch()"
     (onOpenFavorites)="handleOpenFavorites()"
     (onCloseFavorite)="handleCloseFavorites()"
-    [badgeValue]="this.genresService.favoriteAlbumsByGenre.getValue().length"
+    [badgeValue]="genresService.favoriteAlbumsByGenre.getValue().length"
   >
   </app-navigation>
 
-  <section class="Albums" *ngIf="this.genresService.isLoaded.getValue()">
+  <section class="Albums" *ngIf="genresService.isLoaded.getValue()">
     <router-outlet #router>
     </router-outlet>
 
+    <p class="Albums_empty" *ngIf="noAlbums && !genresService.favoriteFilterOn">
+      There aren't any albums with such name
+    </p>
+
     <app-album
-      *ngIf="!this.genresService.favoriteFilterOn"
+      *ngIf="!genresService.favoriteFilterOn && !noAlbums"
       [albumsToShow]="albumsToShow"
       [activeGenre]="this.genresService.activeGenre"
     >
     </app-album>
+
   </section>
 
   <mat-paginator
-    *ngIf="this.genresService.isLoaded.getValue() && !this.genresService.favoriteFilterOn"
+    *ngIf="this.genresService.isLoaded.getValue() && !genresService.favoriteFilterOn"
     [length]="currentItems"
     [pageIndex]="this.pageIndex - 1"
     [hidePageSize]="true"
