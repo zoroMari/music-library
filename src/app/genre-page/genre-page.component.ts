@@ -61,7 +61,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       this.pageIndex = 1;
       this.genresService.searchFilterOn = false;
     }
-    this._router.navigate(['./favorites'], { relativeTo: this._route, queryParamsHandling: 'preserve' });
+    this._router.navigate(['./favorites'], { relativeTo: this._route });
   }
 
   handleCloseFavorites() {
@@ -145,7 +145,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
         this.genresService.searchValue.getValue(),
         this.genresService.getFavoriteAlbums(this.genresService.activeGenre
       ));
-    } else this._initialization(this.genresService.activeGenre, 1);
+    } else this._router.navigate( [], { queryParams: { page: this.pageIndex } });
   }
 
   public handlePageEvent(e: PageEvent) {
