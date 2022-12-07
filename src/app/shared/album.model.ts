@@ -34,3 +34,31 @@ export interface IAlbumInfo {
   total: string;
 }
 
+export interface IAlbumsFromAPIForSearchBySong {
+  results: IAlbumsObjectForSearchBySong;
+}
+
+export interface IAlbumsFromAPIForSearchBySinger {
+  results: IAlbumsObjectForSearchBySinger;
+}
+export interface IAlbumsObjectForSearchBySong {
+  albummatches?: { album: IAlbum[] };
+
+  '@attr': IAlbumInfo;
+  'opensearch:itemsPerPage': string;
+  'opensearch:totalResults': string;
+}
+
+export interface IAlbumsObjectForSearchBySinger {
+  artistmatches?: { artist: IArtist[] };
+
+  '@attr': IAlbumInfo;
+  'opensearch:itemsPerPage': string;
+  'opensearch:totalResults': string;
+}
+
+export interface IArtist {
+  name: string;
+  image: IAlbumImage[];
+  url: string;
+}

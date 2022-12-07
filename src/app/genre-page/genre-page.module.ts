@@ -1,13 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MaterialModule } from "../material.module";
 
 import { GenrePageComponent } from "./genre-page.component";
 import { NavigationComponent } from "./navigation/navigation.component";
 import { FavoritesComponent } from "./favorites/favorites.component";
-import { SearchPipe } from "./search.pipe";
 import { AlbumComponent } from "./album/album.component";
 
 @NgModule({
@@ -16,7 +15,6 @@ import { AlbumComponent } from "./album/album.component";
     NavigationComponent,
     FavoritesComponent,
     AlbumComponent,
-    SearchPipe,
   ],
   imports: [
     CommonModule,

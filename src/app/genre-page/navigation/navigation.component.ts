@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angu
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { debounceTime, Subscription } from "rxjs";
+import { GenresService } from "src/app/genres.service";
 
 @Component({
   selector: 'app-navigation',
@@ -10,25 +11,27 @@ import { debounceTime, Subscription } from "rxjs";
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   public form!: FormGroup;
-  public favoriteisOpen = false;
+  // public favoriteisOpen = false;
   private _sub!: Subscription;
   @Input() badgeValue: number = 0;
-  @Output() onSearch = new EventEmitter<string>();
-  @Output() onOpenFavorites = new EventEmitter<boolean>();
-  @Output() onCloseFavorite = new EventEmitter<boolean>();
+  @Output() onCloseSearch = new EventEmitter<null>();
+  @Output() onOpenFavorites = new EventEmitter<null>();
+  @Output() onCloseFavorite = new EventEmitter<null>();
 
   constructor(
     private _router: Router,
+    public genresService: GenresService,
   ) {}
 
   ngOnInit(): void {
+    this.genresService.searchFilterOn = false;
     this.form = new FormGroup({
       search: new FormControl(''),
     });
 
-    this._sub = this.form.controls['search'].valueChanges.pipe(debounceTime(200)).subscribe(
+    this._sub = this.form.controls['search'].valueChanges.pipe(debounceTime(500)).subscribe(
       (value) => {
-        this.onSearch.emit(value)
+        this.genresService.searchValue.next(value);
       }
     )
   }
@@ -38,14 +41,25 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   public handleOpenFavorites() {
-    this.favoriteisOpen = true;
-    this.onOpenFavorites.emit(true);
+    this.genresService.favoriteFilterOn = true;
+    this.onOpenFavorites.emit();
     this.form.reset();
   }
 
   public handleCloseFavorites() {
-    this.favoriteisOpen = false;
-    this.onCloseFavorite.emit(false);
+    this.genresService.favoriteFilterOn = false;
+    this.onCloseFavorite.emit();
+    this.form.reset();
+  }
+
+  public handleOnSearch() {
+    this.genresService.searchFilterOn = true;
+  }
+
+  public handleCloseSearch() {
+    this.onCloseSearch.emit();
+    this.genresService.searchValue.next('');
+    this.genresService.searchFilterOn = false;
     this.form.reset();
   }
 
