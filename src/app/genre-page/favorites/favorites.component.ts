@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, OnChanges, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Route } from "@angular/router";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 import { GenresService } from "src/app/genres.service";
 import { IAlbumFav } from "src/app/shared/album.model";
@@ -38,8 +37,8 @@ export class FavoritesComponent implements OnInit, OnDestroy {
       (albums) => {
         if (this.genresService.searchFilterOn) {
           this.favoriteAlbums = albums;
-          this.noFavAlbumsBySearch = this.favoriteAlbums.length === 0;
-        }
+          this.noFavAlbumsBySearch = (this.favoriteAlbums.length === 0 && this.noFavAlbums === false) ? true : false;
+        } else this.noFavAlbumsBySearch = false;
       }
     ))
   }
