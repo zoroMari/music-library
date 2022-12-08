@@ -8,6 +8,7 @@ import { GenrePageComponent } from "./genre-page.component";
 import { NavigationComponent } from "./navigation/navigation.component";
 import { FavoritesComponent } from "./favorites/favorites.component";
 import { AlbumComponent } from "./album/album.component";
+import { GenreGuard } from "../genre-guard";
 
 @NgModule({
   declarations: [
