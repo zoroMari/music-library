@@ -22,6 +22,6 @@ export class GenresComponent implements OnInit {
 
   public handleOpenGenre(genre: string) {
     if (!this._genresService.genres.find((item) => item.name === genre)) return;
-    this._router.navigate(['', genre], { queryParams: {page: 1} });
+    this._router.navigate(['', genre], { queryParams: {page: this._genresService.pageIndex.getValue()} });
   }
 }

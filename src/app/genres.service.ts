@@ -22,6 +22,8 @@ export class GenresService {
   public albumsToShowByGenre = new BehaviorSubject<IAlbumFav[]>([]);
   public favoriteAlbumsByGenre = new BehaviorSubject<IAlbumFav[]>([]);
   public favoriteAlbumsBySearch = new BehaviorSubject<IAlbumFav[]>([]);
+  public pageIndex = new BehaviorSubject<number>(1);
+
   public activeGenre!: string;
   public query: number = 0;
   public albumsInfo = new BehaviorSubject<IAlbumInfo>({

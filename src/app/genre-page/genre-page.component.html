@@ -18,16 +18,16 @@
     <app-album
       *ngIf="!genresService.favoriteFilterOn && !noAlbums"
       [albumsToShow]="albumsToShow"
-      [activeGenre]="this.genresService.activeGenre"
+      [activeGenre]="genresService.activeGenre"
     >
     </app-album>
 
   </section>
 
   <mat-paginator
-    *ngIf="this.genresService.isLoaded.getValue() && !genresService.favoriteFilterOn"
-    [length]="currentItems"
-    [pageIndex]="this.pageIndex - 1"
+    *ngIf="genresService.isLoaded.getValue() && !genresService.favoriteFilterOn"
+    [length]="allItems"
+    [pageIndex]="genresService.pageIndex.getValue() - 1"
     [hidePageSize]="true"
     showPageSizeOptions="true"
     aria-label="Select page"
