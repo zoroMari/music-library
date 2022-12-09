@@ -96,6 +96,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
   handleCloseFavorites() {
     this._router.navigate(['./'], { relativeTo: this._route, queryParamsHandling: 'preserve' });
+    this._initialization(this.genresService.activeGenre, this.genresService.pageIndex.getValue());
     this.genresService.searchFilterOn = false;
   }
 
