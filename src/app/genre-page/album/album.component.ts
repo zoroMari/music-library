@@ -37,5 +37,4 @@ export class AlbumComponent {
   handleRemoveFromFavorite(album: IAlbumFav, activeGenre: string) {
     this.genresService.handleRemoveFromFavorite(activeGenre, album);
   }
-
 }

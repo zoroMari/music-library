@@ -11,7 +11,6 @@ import { GenresService } from "src/app/genres.service";
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   public form!: FormGroup;
-  // public favoriteisOpen = false;
   private _sub!: Subscription;
   @Input() badgeValue: number = 0;
   @Output() onCloseSearch = new EventEmitter<null>();
@@ -37,7 +36,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   public handleBack() {
-    this._router.navigate([''])
+    this._router.navigate(['']);
+    this.genresService.pageIndex.next(1);
   }
 
   public handleOpenFavorites() {

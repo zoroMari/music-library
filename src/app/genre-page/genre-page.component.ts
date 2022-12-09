@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subscription, tap } from 'rxjs';
 import { GenresService } from '../genres.service';
 import { IAlbumFav } from '../shared/album.model';
 
@@ -15,7 +15,6 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
   public currentItems: number = 0;
   public allItems: number = 0;
-  public pageIndex: number = 1;
 
   public albums!: Observable<IAlbumFav[]>;
   public albumsToShow!: IAlbumFav[];
@@ -39,8 +38,11 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
     this._sub.add(this._route.queryParams.subscribe(
       (params: Params) => {
-        this.pageIndex = params['page'];
-        this._initialization(this.genresService.activeGenre, this.pageIndex);
+        if (this.genresService.favoriteFilterOn) return;
+        else {
+          this.genresService.pageIndex.next(params['page']);
+          this._initialization(this.genresService.activeGenre, this.genresService.pageIndex.getValue());
+        }
       }
     ))
 
@@ -48,29 +50,28 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       (albums) => {
         this.albumsToShow = albums;
         this.genresService.isLoaded.next(true);
+        this.currentItems = +this.genresService.albumsInfo.getValue().perPage;
+        this.allItems = +this.genresService.albumsInfo.getValue().total;
       }
     ))
 
     this._sub.add(this.genresService.searchValue.subscribe(
       (value) => {
-        this.handleOnSearch(value)
-        // if (this.albumsToShow.length === 0) this.noAlbums = true;
+        if (!this.genresService.searchFilterOn) return;
+        else this._handleOnSearch(value)
       }
     ))
   }
 
-  handleOpenFavorites() {
-    if (this.genresService.searchFilterOn) {
-      this.pageIndex = 1;
-      this.genresService.searchFilterOn = false;
-    }
-    this._router.navigate(['./favorites'], { relativeTo: this._route });
-  }
+  private _initialization(genre: string, page: number) {
+    const favoriteAlbums = this.genresService.getFavoriteAlbums(this.genresService.activeGenre);
+    this.genresService.favoriteAlbumsByGenre.next(favoriteAlbums);
 
-  handleCloseFavorites() {
-    this._router.navigate(['./'], { relativeTo: this._route, queryParams: {page: this.pageIndex}});
-    this._initialization(this.genresService.activeGenre,  this.pageIndex);
-    this.genresService.searchFilterOn = false;
+    this.genresService.fetchAlbums(genre, page).pipe(
+      tap((albums) => {
+        this._checkIsFavortite(albums);
+      })
+    ).subscribe();
   }
 
   private _checkIsFavortite(array: IAlbumFav[]) {
@@ -83,30 +84,23 @@ export class GenrePageComponent implements OnInit, OnDestroy {
       if (!isFavorite) albumsWithFav.push(item);
       else albumsWithFav.push({...item, isFavorite: true});
     });
-
     this.genresService.albumsToShowByGenre.next(albumsWithFav);
   }
 
-  private _initialization(genre: string, page: number) {
-    const favoriteAlbums = this.genresService.getFavoriteAlbums(this.genresService.activeGenre);
-    this.genresService.favoriteAlbumsByGenre.next(favoriteAlbums);
-    this.albums = this.genresService.fetchAlbums(genre, page).pipe(
-      map((albums) => {
-        this._checkIsFavortite(albums);
-        return this.genresService.albumsToShowByGenre.getValue();
-      })
-    );
-    this.albums.subscribe(
-      (albums: IAlbumFav[]) => {
-        this.currentItems = +this.genresService.albumsInfo.getValue().perPage;
-        this.currentItems = +this.genresService.albumsInfo.getValue().total;
-        this.genresService.albumsToShowByGenre.next(albums);
-      }
-    )
+  handleOpenFavorites() {
+    if (this.genresService.searchFilterOn) {
+      this.genresService.searchFilterOn = false;
+    }
+    this._router.navigate(['./favorites'], { relativeTo: this._route, queryParamsHandling: 'preserve' });
   }
 
-  public handleOnSearch(value: string) {
-    this.pageIndex = 1;
+  handleCloseFavorites() {
+    this._router.navigate(['./'], { relativeTo: this._route, queryParamsHandling: 'preserve' });
+    this.genresService.searchFilterOn = false;
+  }
+
+  private _handleOnSearch(value: string) {
+    this.genresService.pageIndex.next(1);
     if (this.genresService.favoriteFilterOn) this._searchLogicInFavorites(value);
     else this._searchLogic(value);
   }
@@ -116,7 +110,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
   }
 
   private _searchLogic(value: string) {
-    this.albums = this.genresService.searchAlbums(this.genresService.activeGenre, value, this.pageIndex).pipe(
+    this.albums = this.genresService.searchAlbums(this.genresService.activeGenre, value, this.genresService.pageIndex.getValue()).pipe(
       map((albums) => {
         if (!albums) return [];
         this._checkIsFavortite(albums);
@@ -136,7 +130,6 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
           if (this.albumsToShow.length === 0) this.noAlbums = true;
           else this.noAlbums = false;
-
         }
       )
     }
@@ -145,7 +138,7 @@ export class GenrePageComponent implements OnInit, OnDestroy {
 
   public handleOnCloseSearch() {
     this.genresService.searchFilterOn = false;
-    this.pageIndex = 1;
+    this.genresService.pageIndex.next(1);
     this.noAlbums = false;
 
     if (this.genresService.favoriteFilterOn) {
@@ -153,19 +146,19 @@ export class GenrePageComponent implements OnInit, OnDestroy {
         this.genresService.searchValue.getValue(),
         this.genresService.getFavoriteAlbums(this.genresService.activeGenre
       ));
-    } else this._router.navigate( [], { queryParams: { page: this.pageIndex } });
+    } else this._router.navigate( [], { queryParams: { page: this.genresService.pageIndex.getValue() } });
   }
 
   public handlePageEvent(e: PageEvent) {
     const page =  e.pageIndex + 1;
-    this.pageIndex = page;
-
+    this.genresService.pageIndex.next(page);
     if (this.genresService.searchFilterOn) this._searchLogic(this.genresService.searchValue.getValue());
+    else if (this.genresService.favoriteFilterOn) return;
     else this._router.navigate( [], { queryParams: { page: page } });
   }
 
   ngOnDestroy(): void {
     this.genresService.isLoaded.next(false);
-    this._sub.unsubscribe()
+    this._sub.unsubscribe();
   }
 }
